@@ -1,6 +1,7 @@
 import re
 from patterns import PATTERNS
 
+
 def scan_content(content):
     findings = []
 
