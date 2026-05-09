@@ -105,10 +105,12 @@ def main():
     results = scan_path(args.path)
 
     if args.format == "json":
-        print_json(results)
+        print(json.dumps(results))
     else:
         print_text(results)
 
 
 if __name__ == "__main__":
     main()
+if any(findings for findings in results.values()):
+    exit(1)
