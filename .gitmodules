@@ -1,0 +1,3 @@
+[submodule "tools/trufflehog"]
+	path = tools/trufflehog
+	url = https://github.com/trufflesecurity/trufflehog.git
