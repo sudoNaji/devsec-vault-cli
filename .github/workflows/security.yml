@@ -1,16 +1,87 @@
-name: DevSec Vault Security Scan
+# ─────────────────────────────────────────────────────────────────────────────
+# DevSec Vault — Security Scanning Pipeline
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Security
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main", "develop"]
   pull_request:
+  schedule:
+    - cron: "0 3 * * 1"   # Weekly Monday 03:00 UTC
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
-  scan:
+  # ── 1. Secret Scanning ────────────────────────────────────────────────────
+  secret-scan:
+    name: Secret Scan (file + history)
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install DevSec Vault dependencies
+        run: pip install click rich
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Scan source files
+        # Exclude the intentional demo fixture (fake_secrets.py).
+        # Real source files must be clean; exit 1 fails the job.
+        run: |
+          python src/cli.py scan src/ \
+            --format json \
+            --output reports/file-scan.json \
+            --baseline .devsec-baseline.json \
+            --fail-on high
+        env:
+          # Tell the scanner to skip the demo fixture entirely
+          DEVSEC_EXCLUDE: "src/fake_secrets.py"
+
+      - name: Scan git history (last 300 commits)
+        run: |
+          python src/cli.py history \
+            --max-commits 300 \
+            --format sarif \
+            --output reports/history-scan.sarif \
+            --baseline .devsec-baseline.json
+        continue-on-error: true
+
+      - name: Upload SARIF — history scan
+        uses: github/codeql-action/upload-sarif@v4
+        if: always() && hashFiles('reports/history-scan.sarif') != ''
+        with:
+          sarif_file: reports/history-scan.sarif
+          category: devsec-vault-history
+        continue-on-error: true   # upload-sarif needs Code Scanning; degrade gracefully
+
+      - name: Upload scan artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scan-reports
+          path: reports/
+          retention-days: 30
+
+  # ── 2. Static Analysis (Bandit — no Code Scanning required) ──────────────
+  static-analysis:
+    name: Static Analysis (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -18,23 +89,145 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
+      - name: Install Bandit
+        run: pip install bandit
 
-      - name: Run DevSec Vault Scanner
-        run: |
-          python3 src/cli.py src --format json > report.json
+      - name: Create reports directory
+        run: mkdir -p reports
 
-      - name: Fail pipeline if secrets found
+      - name: Run Bandit
         run: |
-          if grep -q "AWS Key\|GitHub Token\|Slack Token\|Password" report.json; then
-            echo "SECURITY ISSUE DETECTED - PIPELINE FAILED"
-            exit 1
-          fi
+          bandit -r src/ \
+            --exclude src/fake_secrets.py \
+            --format json \
+            --output reports/bandit.json \
+            --severity-level medium \
+            --confidence-level medium || true
 
-      - name: Upload report
+      - name: Print Bandit summary
+        if: always()
+        run: |
+          python3 -c "
+          import json, sys
+          try:
+              d = json.load(open('reports/bandit.json'))
+              m = d.get('metrics', {}).get('_totals', {})
+              issues = d.get('results', [])
+              print(f'Bandit: {len(issues)} issue(s) found')
+              for sev in ['HIGH','MEDIUM']:
+                  count = m.get(f'SEVERITY.{sev}', 0)
+                  if count: print(f'  {sev}: {count}')
+              if any(r[\"issue_severity\"] == \"HIGH\" for r in issues):
+                  print('HIGH severity issues found — failing')
+                  sys.exit(1)
+          except Exception as e:
+              print(f'Could not parse bandit report: {e}')
+          "
+
+      - name: Upload Bandit report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: scan-report
-          path: report.json
+          name: bandit-report
+          path: reports/bandit.json
+          retention-days: 30
+
+  # ── 3. CodeQL (best-effort — graceful if Code Scanning not enabled) ───────
+  codeql:
+    name: CodeQL (Python)
+    runs-on: ubuntu-latest
+    continue-on-error: true   # Don't block merge if Code Scanning disabled on repo
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: python
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:python"
+        continue-on-error: true
+
+  # ── 4. Dependency Audit ───────────────────────────────────────────────────
+  dependency-audit:
+    name: Dependency Audit (pip-audit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Create reports directory
+        run: mkdir -p reports
+
+      - name: Run pip-audit
+        run: |
+          pip-audit \
+            --requirement requirements.txt \
+            --format json \
+            --output reports/pip-audit.json \
+            --progress-spinner off
+        continue-on-error: true
+
+      - name: Print pip-audit summary
+        if: always()
+        run: |
+          python3 -c "
+          import json
+          try:
+              d = json.load(open('reports/pip-audit.json'))
+              vulns = [dep for dep in d if dep.get('vulns')]
+              print(f'pip-audit: {len(vulns)} package(s) with vulnerabilities')
+              for dep in vulns:
+                  for v in dep['vulns']:
+                      print(f'  {dep[\"name\"]}=={dep[\"version\"]}: {v[\"id\"]} ({v.get(\"fix_versions\",[])})')
+          except Exception as e:
+              print(f'Could not parse pip-audit report: {e}')
+          "
+
+      - name: Upload pip-audit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-audit
+          path: reports/pip-audit.json
+          retention-days: 30
+
+  # ── 5. Unit Tests ─────────────────────────────────────────────────────────
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install click rich pytest
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short

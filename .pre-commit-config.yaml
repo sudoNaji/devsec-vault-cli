@@ -1,7 +1,73 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DevSec Vault — pre-commit hook configuration
+# Install hooks: pre-commit install
+# Run manually: pre-commit run --all-files
+# ─────────────────────────────────────────────────────────────────────────────
+
 repos:
--   repo: https://github.com/Yelp/detect-secrets
+  # ── Secret Detection ────────────────────────────────────────────────────
+  - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
-    -   id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
-        exclude: package.lock.json
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: |
+          (?x)^(
+            \.secrets\.baseline|
+            \.devsec-baseline\.json|
+            tests/.*|
+            src/fake_secrets\.py|
+            .*\.example$
+          )$
+
+  # ── DevSec Vault staged scan (custom hook) ───────────────────────────────
+  - repo: local
+    hooks:
+      - id: devsec-vault-staged
+        name: DevSec Vault — staged secret scan
+        language: python
+        entry: python src/cli.py staged
+        additional_dependencies: ["click", "rich"]
+        args: ["--baseline", ".devsec-baseline.json"]
+        always_run: false
+        pass_filenames: false
+        exclude: |
+          (?x)^(
+            \.devsec-baseline\.json|
+            src/fake_secrets\.py
+          )$
+
+  # ── Python formatting / linting ─────────────────────────────────────────
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args:
+          - "--max-line-length=100"
+          - "--extend-ignore=E203,W503"
+
+  # ── General hygiene ─────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: no-commit-to-branch
+        args: ["--branch", "main"]

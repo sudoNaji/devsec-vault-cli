@@ -1,0 +1,549 @@
+{
+  "schema": "devsec-vault-baseline",
+  "version": "1",
+  "allowlist": [
+    "00fe68e6fec5c9a8",
+    "081b4e378a4642e9",
+    "0f6ca2a31baf0609",
+    "12a81c1644ab1d43",
+    "175c5fbbb7faceff",
+    "2554fffdebe7e979",
+    "32b5aecae52055b4",
+    "348975eca5f39688",
+    "3971c641b01942bc",
+    "3ad500fbc08fa69a",
+    "3b4adf4ac59c8022",
+    "3cc62ed6368c4463",
+    "3cf4c8773ac82330",
+    "3deaec582eeb4f1c",
+    "4385974385cd8ea2",
+    "446a6cbebf8abc0f",
+    "4d1a535a42e2a474",
+    "4f2d6aaf6f378c0a",
+    "51368f514c00ad6d",
+    "523a78623b95245b",
+    "55d3d215fba3dcfc",
+    "60e346f9512320f2",
+    "6e02c16427ccbf66",
+    "769668d5fbaa693b",
+    "7a7e104b02a2cc5b",
+    "7bbfeb4530a8480a",
+    "8288fc361e665197",
+    "8d56fe47cc377549",
+    "8dc5f9203858e0fb",
+    "8e424d9e7882168c",
+    "95e82c441885392f",
+    "98564ee4e64ad952",
+    "9c4886f96557462a",
+    "9f27e1ecc0befbea",
+    "a21fd10fd9e04e0a",
+    "a6c052b95be584ee",
+    "ae490b2f1e3e7611",
+    "b053e242c40d0ad6",
+    "b5b746d0e784e932",
+    "b7796607f5159b43",
+    "b7d3e047db5b91d4",
+    "b801a47288b7fcc8",
+    "b9d6d345d4b2ee15",
+    "bb91981adfac60f6",
+    "be247a9bcf015e31",
+    "be2f49441522819d",
+    "ddae0788af15708d",
+    "e31b60c82d472ee5",
+    "e642033a699d3147",
+    "e9264e1f00c7b819",
+    "ea5b5a215a86a7bb",
+    "ed6a2848b3ab896f",
+    "ef8cf556c139c6f0",
+    "f5e112dbe5f16400",
+    "fbb870aec4eb039e",
+    "fdfcd4078aa2ac77"
+  ],
+  "entries": [
+    {
+      "fingerprint": "a6c052b95be584ee",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=6.02)",
+      "target": "src/scanner.py",
+      "line": 86,
+      "masked_value": "ABCD************9+/="
+    },
+    {
+      "fingerprint": "60e346f9512320f2",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.46)",
+      "target": "src/scanner.py",
+      "line": 87,
+      "masked_value": "0123************CDEF"
+    },
+    {
+      "fingerprint": "3cc62ed6368c4463",
+      "rule": "RSA_PRIVATE_KEY",
+      "description": "RSA Private Key",
+      "target": "src/patterns.py",
+      "line": 92,
+      "masked_value": "----************----"
+    },
+    {
+      "fingerprint": "00fe68e6fec5c9a8",
+      "rule": "OPENSSH_PRIVATE_KEY",
+      "description": "OpenSSH Private Key",
+      "target": "src/patterns.py",
+      "line": 97,
+      "masked_value": "----************----"
+    },
+    {
+      "fingerprint": "51368f514c00ad6d",
+      "rule": "EC_PRIVATE_KEY",
+      "description": "EC Private Key",
+      "target": "src/patterns.py",
+      "line": 102,
+      "masked_value": "----************----"
+    },
+    {
+      "fingerprint": "8288fc361e665197",
+      "rule": "PGP_PRIVATE_KEY",
+      "description": "PGP Private Key Block",
+      "target": "src/patterns.py",
+      "line": 107,
+      "masked_value": "----************----"
+    },
+    {
+      "fingerprint": "9f27e1ecc0befbea",
+      "rule": "AWS_ACCESS_KEY_ID",
+      "description": "AWS Access Key ID",
+      "target": "src/fake_secrets.py",
+      "line": 9,
+      "masked_value": "AKIA************MPLE"
+    },
+    {
+      "fingerprint": "3971c641b01942bc",
+      "rule": "AWS_SECRET_KEY",
+      "description": "AWS Secret Access Key",
+      "target": "src/fake_secrets.py",
+      "line": 10,
+      "masked_value": "AWS_************EKEY"
+    },
+    {
+      "fingerprint": "be247a9bcf015e31",
+      "rule": "GITHUB_PERSONAL_TOKEN",
+      "description": "GitHub Personal Access Token",
+      "target": "src/fake_secrets.py",
+      "line": 13,
+      "masked_value": "ghp_************7890"
+    },
+    {
+      "fingerprint": "b5b746d0e784e932",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.27)",
+      "target": "src/fake_secrets.py",
+      "line": 13,
+      "masked_value": "ghp_************7890"
+    },
+    {
+      "fingerprint": "7a7e104b02a2cc5b",
+      "rule": "STRIPE_SECRET_KEY",
+      "description": "Stripe Secret Key",
+      "target": "src/fake_secrets.py",
+      "line": 16,
+      "masked_value": "sk_l************p7dc"
+    },
+    {
+      "fingerprint": "4f2d6aaf6f378c0a",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "src/fake_secrets.py",
+      "line": 16,
+      "masked_value": "SECR************p7dc"
+    },
+    {
+      "fingerprint": "a21fd10fd9e04e0a",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.75)",
+      "target": "src/fake_secrets.py",
+      "line": 16,
+      "masked_value": "sk_l************p7dc"
+    },
+    {
+      "fingerprint": "ddae0788af15708d",
+      "rule": "DB_CONN_STRING",
+      "description": "Database Connection String with credentials",
+      "target": "src/fake_secrets.py",
+      "line": 22,
+      "masked_value": "post************tion"
+    },
+    {
+      "fingerprint": "8d56fe47cc377549",
+      "rule": "SLACK_TOKEN",
+      "description": "Slack API Token",
+      "target": "src/fake_secrets.py",
+      "line": 25,
+      "masked_value": "xoxb************429b"
+    },
+    {
+      "fingerprint": "081b4e378a4642e9",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "src/fake_secrets.py",
+      "line": 25,
+      "masked_value": "API_************429b"
+    },
+    {
+      "fingerprint": "4d1a535a42e2a474",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.32)",
+      "target": "src/fake_secrets.py",
+      "line": 25,
+      "masked_value": "xoxb************429b"
+    },
+    {
+      "fingerprint": "3ad500fbc08fa69a",
+      "rule": "JWT_TOKEN",
+      "description": "JSON Web Token (JWT)",
+      "target": "src/fake_secrets.py",
+      "line": 28,
+      "masked_value": "eyJh************sw5c"
+    },
+    {
+      "fingerprint": "e642033a699d3147",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.70)",
+      "target": "src/fake_secrets.py",
+      "line": 28,
+      "masked_value": "SflK************sw5c"
+    },
+    {
+      "fingerprint": "be2f49441522819d",
+      "rule": "DB_CONN_STRING",
+      "description": "Database Connection String with credentials",
+      "target": "commit:bffdcd060315",
+      "line": 631,
+      "masked_value": "post************/db`",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "446a6cbebf8abc0f",
+      "rule": "GITHUB_PERSONAL_TOKEN",
+      "description": "GitHub Personal Access Token",
+      "target": "commit:bffdcd060315",
+      "line": 2561,
+      "masked_value": "ghp_************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "b7d3e047db5b91d4",
+      "rule": "STRIPE_SECRET_KEY",
+      "description": "Stripe Secret Key",
+      "target": "commit:bffdcd060315",
+      "line": 2586,
+      "masked_value": "sk_t************p7dc",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "b9d6d345d4b2ee15",
+      "rule": "DB_CONN_STRING",
+      "description": "Database Connection String with credentials",
+      "target": "commit:bffdcd060315",
+      "line": 2616,
+      "masked_value": "post************mydb",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "9c4886f96557462a",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 278,
+      "masked_value": "secr************e684",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "fdfcd4078aa2ac77",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 285,
+      "masked_value": "secr************38b6",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "2554fffdebe7e979",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 294,
+      "masked_value": "secr************bc65",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "175c5fbbb7faceff",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 315,
+      "masked_value": "secr************5e45",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "8dc5f9203858e0fb",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 322,
+      "masked_value": "secr************fd10",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "b7796607f5159b43",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 329,
+      "masked_value": "secr************0440",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "4385974385cd8ea2",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 343,
+      "masked_value": "secr************7e5b",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "8e424d9e7882168c",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 350,
+      "masked_value": "secr************f05b",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "ed6a2848b3ab896f",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 357,
+      "masked_value": "secr************9134",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "ea5b5a215a86a7bb",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 373,
+      "masked_value": "secr************a9cd",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "32b5aecae52055b4",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 380,
+      "masked_value": "secr************fba4",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "6e02c16427ccbf66",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 387,
+      "masked_value": "secr************4ab2",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "f5e112dbe5f16400",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 396,
+      "masked_value": "secr************d3e8",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "b053e242c40d0ad6",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 405,
+      "masked_value": "secr************0aba",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "fbb870aec4eb039e",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 412,
+      "masked_value": "secr************c9d9",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "12a81c1644ab1d43",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 419,
+      "masked_value": "secr************552d",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "ef8cf556c139c6f0",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 440,
+      "masked_value": "secr************960d",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "ae490b2f1e3e7611",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 447,
+      "masked_value": "secr************d3f6",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "98564ee4e64ad952",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 461,
+      "masked_value": "secr************0caa",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "3b4adf4ac59c8022",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 468,
+      "masked_value": "secr************c1a0",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "769668d5fbaa693b",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 475,
+      "masked_value": "secr************89fe",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "0f6ca2a31baf0609",
+      "rule": "GENERIC_SECRET",
+      "description": "Generic Secret / Password Assignment",
+      "target": "commit:bffdcd060315",
+      "line": 482,
+      "masked_value": "secr************31ba",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "3deaec582eeb4f1c",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.11)",
+      "target": "commit:bffdcd060315",
+      "line": 2561,
+      "masked_value": "ghp_************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "7bbfeb4530a8480a",
+      "rule": "GITHUB_OAUTH_TOKEN",
+      "description": "GitHub OAuth Token",
+      "target": "commit:bffdcd060315",
+      "line": 2568,
+      "masked_value": "gho_************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "348975eca5f39688",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.06)",
+      "target": "commit:bffdcd060315",
+      "line": 2568,
+      "masked_value": "gho_************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "e9264e1f00c7b819",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.08)",
+      "target": "commit:bffdcd060315",
+      "line": 2580,
+      "masked_value": "STRI************p7dc",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "3cf4c8773ac82330",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.93)",
+      "target": "commit:bffdcd060315",
+      "line": 2586,
+      "masked_value": "STRI************p7dc",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "e31b60c82d472ee5",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.79)",
+      "target": "commit:bffdcd060315",
+      "line": 2634,
+      "masked_value": "SLAC************429b",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "95e82c441885392f",
+      "rule": "JWT_TOKEN",
+      "description": "JSON Web Token (JWT)",
+      "target": "commit:bffdcd060315",
+      "line": 2645,
+      "masked_value": "eyJh************sR8U",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "bb91981adfac60f6",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=4.82)",
+      "target": "commit:bffdcd060315",
+      "line": 2645,
+      "masked_value": "dozj************sR8U",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "523a78623b95245b",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.31)",
+      "target": "commit:bffdcd060315",
+      "line": 2693,
+      "masked_value": "GITH************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "b801a47288b7fcc8",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.03)",
+      "target": "commit:bffdcd060315",
+      "line": 2694,
+      "masked_value": "STRI************p7dc",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    },
+    {
+      "fingerprint": "55d3d215fba3dcfc",
+      "rule": "HIGH_ENTROPY",
+      "description": "High-entropy token (entropy=5.25)",
+      "target": "commit:bffdcd060315",
+      "line": 2705,
+      "masked_value": "TOKE************3456",
+      "note": "history finding from fake_secrets.py demo fixture (commit bffdcd0)"
+    }
+  ]
+}
