@@ -1,24 +1,20 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # DevSec Vault — Supply-Chain Security
 # Build provenance (attestations) + OpenSSF Scorecard
-#
-# Scorecard hard restriction: only runs on the default branch (main).
-# Trigger is therefore main-only + weekly schedule.
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Supply Chain
 
 on:
   push:
-    branches: ["main"]        # Scorecard only supports the default branch
+    branches: ["main"]
   schedule:
-    - cron: "0 4 * * 1"       # Weekly Monday 04:00 UTC
+    - cron: "0 4 * * 1"
 
+# Global permissions: read-only (Scorecard enforces least-privilege here)
 permissions:
   contents: read
-  id-token: write
-  attestations: write
-  security-events: write
+  security-events: read
   actions: read
 
 jobs:
@@ -29,8 +25,8 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
-      id-token: write
-      attestations: write
+      id-token: write       # OIDC — scoped to this job only
+      attestations: write   # provenance — scoped to this job only
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,13 +58,12 @@ jobs:
   scorecard:
     name: OpenSSF Scorecard
     runs-on: ubuntu-latest
-    # Extra guard: skip if somehow triggered from a non-default branch
     if: github.ref == 'refs/heads/main'
     permissions:
-      security-events: write
-      id-token: write
       contents: read
       actions: read
+      id-token: write        # OIDC for Scorecard publish
+      security-events: write # SARIF upload to Code Scanning
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +75,7 @@ jobs:
         with:
           results_file: scorecard.sarif
           results_format: sarif
-          publish_results: true      # Safe: repo is public + running on main
+          publish_results: true
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Scorecard SARIF
@@ -88,4 +83,4 @@ jobs:
         with:
           sarif_file: scorecard.sarif
           category: scorecard
-        continue-on-error: true      # Degrades gracefully if Code Scanning off
+        continue-on-error: true
