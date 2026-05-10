@@ -2,23 +2,17 @@
 # DevSec Vault — Supply-Chain Security
 # Build provenance (attestations) + OpenSSF Scorecard
 #
-# Fixes applied:
-#   - Scorecard: publish_results false (requires public repo + OSSF token)
-#   - Scorecard: repo_token uses GITHUB_TOKEN explicitly (not SCORECARD_TOKEN)
-#   - Scorecard: upload-sarif bumped to v4, wrapped in continue-on-error
-#     (Code Scanning may not be enabled on personal repos)
-#   - Trigger: runs on push to main AND develop, plus weekly schedule
-#   - attest: bumped attest-build-provenance to v2, wrapped continue-on-error
-#     (attestation API requires specific org/repo permissions)
+# Scorecard hard restriction: only runs on the default branch (main).
+# Trigger is therefore main-only + weekly schedule.
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Supply Chain
 
 on:
   push:
-    branches: ["main", "develop"]
+    branches: ["main"]        # Scorecard only supports the default branch
   schedule:
-    - cron: "0 4 * * 1"   # Weekly Monday 04:00 UTC
+    - cron: "0 4 * * 1"       # Weekly Monday 04:00 UTC
 
 permissions:
   contents: read
@@ -32,7 +26,7 @@ jobs:
   attest:
     name: Build & Attest
     runs-on: ubuntu-latest
-    continue-on-error: true   # Graceful if attestation API not available
+    continue-on-error: true
     permissions:
       contents: read
       id-token: write
@@ -68,6 +62,8 @@ jobs:
   scorecard:
     name: OpenSSF Scorecard
     runs-on: ubuntu-latest
+    # Extra guard: skip if somehow triggered from a non-default branch
+    if: github.ref == 'refs/heads/main'
     permissions:
       security-events: write
       id-token: write
@@ -84,9 +80,7 @@ jobs:
         with:
           results_file: scorecard.sarif
           results_format: sarif
-          # publish_results requires the repo to be public AND an OSSF token.
-          # Set to false so the job succeeds on any repo type.
-          publish_results: false
+          publish_results: true      # Safe: repo is public + running on main
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Scorecard SARIF
@@ -94,5 +88,4 @@ jobs:
         with:
           sarif_file: scorecard.sarif
           category: scorecard
-        # Needs Code Scanning to be enabled; degrade gracefully if not.
-        continue-on-error: true
+        continue-on-error: true      # Degrades gracefully if Code Scanning off
