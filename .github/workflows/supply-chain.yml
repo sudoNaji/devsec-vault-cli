@@ -25,8 +25,8 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
-      id-token: write       # OIDC — scoped to this job only
       attestations: write   # provenance — scoped to this job only
+      # id-token: write removed — only scorecard job should mint OIDC tokens
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,7 +62,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-      id-token: write        # OIDC for Scorecard publish
+      id-token: write        # OIDC for Scorecard publish — ONLY here
       security-events: write # SARIF upload to Code Scanning
     steps:
       - name: Checkout
