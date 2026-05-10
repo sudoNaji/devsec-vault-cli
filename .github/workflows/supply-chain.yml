@@ -1,6 +1,8 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# DevSec Vault — Supply-Chain Security
-# Build provenance (attestations) + OpenSSF Scorecard
+# DevSec Vault — Supply-Chain Security (Scorecard only)
+# The attest job has been moved to build-attestation.yml so that Scorecard
+# verification passes — it rejects workflows where any non-scorecard job
+# holds id-token: write permissions.
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Supply Chain
@@ -18,42 +20,6 @@ permissions:
   actions: read
 
 jobs:
-  # ── Build Artifact + Attestation ─────────────────────────────────────────
-  attest:
-    name: Build & Attest
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    permissions:
-      contents: read
-      attestations: write   # provenance — scoped to this job only
-      # id-token: write removed — only scorecard job should mint OIDC tokens
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Package CLI as zip artifact
-        run: |
-          mkdir -p dist
-          zip -r dist/devsec-vault-src.zip src/ requirements.txt README.md
-          sha256sum dist/devsec-vault-src.zip | tee dist/devsec-vault-src.zip.sha256
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
-        with:
-          subject-path: dist/devsec-vault-src.zip
-        continue-on-error: true
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: devsec-vault-build
-          path: dist/
-
   # ── OpenSSF Scorecard ─────────────────────────────────────────────────────
   scorecard:
     name: OpenSSF Scorecard
@@ -62,7 +28,7 @@ jobs:
     permissions:
       contents: read
       actions: read
-      id-token: write        # OIDC for Scorecard publish — ONLY here
+      id-token: write        # OIDC for Scorecard publish — only job in this workflow
       security-events: write # SARIF upload to Code Scanning
     steps:
       - name: Checkout
