@@ -62,7 +62,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload SARIF — history scan
-        uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
         if: always() && hashFiles('reports/history-scan.sarif') != ''
         with:
           sarif_file: reports/history-scan.sarif
@@ -149,16 +149,16 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        uses: github/codeql-action/init@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
         with:
           languages: python
           queries: security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        uses: github/codeql-action/autobuild@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        uses: github/codeql-action/analyze@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
         with:
           category: "/language:python"
         continue-on-error: true
