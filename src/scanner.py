@@ -15,7 +15,6 @@ import hashlib
 import math
 import os
 import subprocess
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Generator
@@ -83,8 +82,6 @@ ENTROPY_THRESHOLD = 4.2  # Shannon entropy; strings above this are suspicious
 ENTROPY_MIN_LENGTH = 20  # minimum chars to run entropy check on
 
 # Characters typical for base64 / hex secrets
-_B64_CHARS = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=")  # noqa: S105 pragma: allowlist secret
-_HEX_CHARS = set("0123456789abcdefABCDEF")  # noqa: S105 pragma: allowlist secret
 
 
 # ─────────────────────────────────────────────────────────────

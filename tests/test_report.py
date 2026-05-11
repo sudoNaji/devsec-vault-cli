@@ -1,6 +1,5 @@
 """tests/test_report.py — Unit tests for report generation."""
 
-import json
 import sys
 from pathlib import Path
 

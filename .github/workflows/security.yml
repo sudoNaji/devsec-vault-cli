@@ -37,7 +37,7 @@ jobs:
           cache: "pip"
 
       - name: Install DevSec Vault dependencies
-        run: pip install click rich
+        run: pip install "click==8.1.8" "rich==13.9.4"
 
       - name: Create reports directory
         run: mkdir -p reports
@@ -93,7 +93,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install Bandit
-        run: pip install bandit
+        run: pip install "bandit==1.8.3"
 
       - name: Create reports directory
         run: mkdir -p reports
@@ -179,7 +179,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install pip-audit
-        run: pip install pip-audit
+        run: pip install "pip-audit==2.9.0"
 
       - name: Create reports directory
         run: mkdir -p reports
@@ -234,7 +234,7 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install click rich pytest
+        run: pip install "click==8.1.8" "rich==13.9.4" "pytest==9.0.3"
 
       - name: Run tests
         run: pytest tests/ -v --tb=short

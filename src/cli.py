@@ -40,7 +40,7 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from baseline import DEFAULT_BASELINE_PATH, diff_baseline, load_baseline, save_baseline
-from patterns import PATTERNS, RAW_PATTERNS, SEVERITY_ORDER
+from patterns import RAW_PATTERNS, SEVERITY_ORDER
 from report import build_metrics, write_json_report, write_sarif_report
 from scanner import ScanResult, scan_directory, scan_file, scan_git_history, scan_staged
 
@@ -335,7 +335,7 @@ def cmd_scan(
         console=err_console,
         transient=True,
     ) as progress:
-        task = progress.add_task("Scanning…", total=None)
+        _ = progress.add_task("Scanning…", total=None)
 
         for target_str in targets:
             target = Path(target_str)
