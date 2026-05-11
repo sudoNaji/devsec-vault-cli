@@ -1,6 +1,6 @@
 # Runtime
 click>=8.1.0
-rich>=13.0.0
+rich>=15.0.0
 
 # Dev / testing
 pytest>=9.0.3          # GHSA-6w46-j5rx-g56g (CVE-2025-71176) fixed in 9.0.3
