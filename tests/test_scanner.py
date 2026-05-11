@@ -9,7 +9,7 @@ from pathlib import Path
 # Ensure src/ is importable
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from scanner import _mask, _shannon_entropy, scan_content, scan_lines
+from scanner import _mask, _shannon_entropy, scan_content
 
 # ─────────────────────────────────────────────────────────────
 # Entropy helpers
