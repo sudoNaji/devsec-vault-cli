@@ -11,15 +11,18 @@ on:
   schedule:
     - cron: "0 3 * * 1"   # Weekly Monday 03:00 UTC
 
+# Minimal global permissions — each job declares only what it needs
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   # ── 1. Secret Scanning ────────────────────────────────────────────────────
   secret-scan:
     name: Secret Scan (file + history)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # SARIF upload — scoped to this job only
     steps:
       - name: Checkout (full history)
         uses: actions/checkout@v4
@@ -39,8 +42,6 @@ jobs:
         run: mkdir -p reports
 
       - name: Scan source files
-        # Exclude the intentional demo fixture (fake_secrets.py).
-        # Real source files must be clean; exit 1 fails the job.
         run: |
           python src/cli.py scan src/ \
             --format json \
@@ -48,7 +49,6 @@ jobs:
             --baseline .devsec-baseline.json \
             --fail-on high
         env:
-          # Tell the scanner to skip the demo fixture entirely
           DEVSEC_EXCLUDE: "src/fake_secrets.py"
 
       - name: Scan git history (last 300 commits)
@@ -66,7 +66,7 @@ jobs:
         with:
           sarif_file: reports/history-scan.sarif
           category: devsec-vault-history
-        continue-on-error: true   # upload-sarif needs Code Scanning; degrade gracefully
+        continue-on-error: true
 
       - name: Upload scan artifacts
         uses: actions/upload-artifact@v4
@@ -76,10 +76,12 @@ jobs:
           path: reports/
           retention-days: 30
 
-  # ── 2. Static Analysis (Bandit — no Code Scanning required) ──────────────
+  # ── 2. Static Analysis (Bandit) ───────────────────────────────────────────
   static-analysis:
     name: Static Analysis (Bandit)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read           # least-privilege — no SARIF upload here
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,15 +134,15 @@ jobs:
           path: reports/bandit.json
           retention-days: 30
 
-  # ── 3. CodeQL (best-effort — graceful if Code Scanning not enabled) ───────
+  # ── 3. CodeQL ─────────────────────────────────────────────────────────────
   codeql:
     name: CodeQL (Python)
     runs-on: ubuntu-latest
-    continue-on-error: true   # Don't block merge if Code Scanning disabled on repo
+    continue-on-error: true
     permissions:
-      security-events: write
-      actions: read
       contents: read
+      actions: read
+      security-events: write   # SARIF upload — scoped to this job only
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -164,6 +166,8 @@ jobs:
   dependency-audit:
     name: Dependency Audit (pip-audit)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read           # least-privilege
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -216,6 +220,8 @@ jobs:
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read           # least-privilege
     steps:
       - name: Checkout
         uses: actions/checkout@v4
