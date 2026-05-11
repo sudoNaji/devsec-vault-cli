@@ -1,7 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # DevSec Vault — Build & Attestation
-# Separated from supply-chain.yml so Scorecard verification passes.
-# Scorecard rejects workflows where any non-scorecard job holds id-token: write.
+# All actions pinned to full commit SHA (Scorecard: Pinned-Dependencies)
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Build Attestation
@@ -20,14 +19,14 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
-      id-token: write       # OIDC — required for artifact attestation
-      attestations: write   # provenance — scoped to this job only
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
@@ -38,13 +37,13 @@ jobs:
           sha256sum dist/devsec-vault-src.zip | tee dist/devsec-vault-src.zip.sha256
 
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@96b4a1ef7235a096b17240c259729fdd70c83d45 # v2
         with:
           subject-path: dist/devsec-vault-src.zip
         continue-on-error: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: devsec-vault-build
           path: dist/

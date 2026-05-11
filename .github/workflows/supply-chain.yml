@@ -1,7 +1,6 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # DevSec Vault — Supply-Chain Security (Scorecard only)
-# The attest job lives in build-attestation.yml so Scorecard verification
-# passes — it rejects workflows where any non-scorecard job holds id-token: write.
+# All actions pinned to full commit SHA (Scorecard: Pinned-Dependencies)
 # ─────────────────────────────────────────────────────────────────────────────
 
 name: Supply Chain
@@ -12,14 +11,12 @@ on:
   schedule:
     - cron: "0 4 * * 1"
 
-# Global permissions: minimal read-only baseline
 permissions:
   contents: read
   security-events: read
   actions: read
 
 jobs:
-  # ── OpenSSF Scorecard ─────────────────────────────────────────────────────
   scorecard:
     name: OpenSSF Scorecard
     runs-on: ubuntu-latest
@@ -27,27 +24,24 @@ jobs:
     permissions:
       contents: read
       actions: read
-      id-token: write        # OIDC for Scorecard publish
-      security-events: write # SARIF upload to Code Scanning
-      statuses: write        # Required for Scorecard ListCommits GraphQL call
+      id-token: write
+      security-events: write
+      statuses: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           persist-credentials: false
 
       - name: Run Scorecard analysis
-        uses: ossf/scorecard-action@v2.4.0
+        uses: ossf/scorecard-action@ff5dd8929f96a8a4dc67d13f32b8c75057829621 # v2.4.0
         with:
           results_file: scorecard.sarif
           results_format: sarif
           publish_results: true
-          # repo_token omitted — action uses the default GITHUB_TOKEN with
-          # the permissions declared above, which resolves the GraphQL
-          # "Resource not accessible by integration" error
 
       - name: Upload Scorecard SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
         with:
           sarif_file: scorecard.sarif
           category: scorecard
