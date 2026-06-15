@@ -3,6 +3,6 @@ click>=8.1.0
 rich>=13.0.0
 
 # Dev / testing
-pytest>=9.0.3          # GHSA-6w46-j5rx-g56g (CVE-2025-71176) fixed in 9.0.3
+pytest>=9.1.0          # GHSA-6w46-j5rx-g56g (CVE-2025-71176) fixed in 9.0.3
 pre-commit>=3.7.0
 detect-secrets>=1.5.0
